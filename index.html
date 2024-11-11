@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>夜间照明控制</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="control-panel">
+        <div class="slider-group">
+            <label>亮度</label>
+            <input type="range" id="brightness" min="0" max="100" value="50">
+            <span id="brightness-value">50%</span>
+        </div>
+        <div class="slider-group">
+            <label>色温</label>
+            <input type="range" id="temperature" min="0" max="100" value="50">
+            <span id="temp-value">中性</span>
+        </div>
+    </div>
+
+    <script>
+        const brightnessSlider = document.getElementById('brightness');
+        const tempSlider = document.getElementById('temperature');
+        const brightnessValue = document.getElementById('brightness-value');
+        const tempValue = document.getElementById('temp-value');
+
+        function updateLight() {
+            const brightness = brightnessSlider.value;
+            const temp = tempSlider.value;
+            
+            // 更新显示值
+            brightnessValue.textContent = `${brightness}%`;
+            
+            // 更新色温文字
+            if (temp < 33) {
+                tempValue.textContent = '冷色';
+            } else if (temp > 66) {
+                tempValue.textContent = '暖色';
+            } else {
+                tempValue.textContent = '中性';
+            }
+            
+            // 改进的亮度和色温计算
+            const opacity = (brightness / 100) * 1.5;  // 将最大亮度提升到 150%
+            const warmColor = `rgba(255, ${160 + parseInt(temp * 0.9)}, ${80 + parseInt(temp * 0.9)}, ${opacity})`;
+            const coolColor = `rgba(${130 + parseInt(temp * 0.9)}, ${160 + parseInt(temp * 0.9)}, 255, ${opacity})`;
+            const bgColor = temp < 50 ? coolColor : warmColor;
+            
+            document.body.style.backgroundColor = bgColor;
+            document.body.style.filter = 'none';
+        }
+
+        brightnessSlider.addEventListener('input', updateLight);
+        tempSlider.addEventListener('input', updateLight);
+        updateLight();
+    </script>
+</body>
+</html> 
